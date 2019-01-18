@@ -78,7 +78,7 @@ namespace Umbraco.Web.Routing
                 if (urls.Add(otherUrl)) //avoid duplicates
                     yield return otherUrl;
         }
-        
+
         /// <summary>
         /// Tries to return a <see cref="UrlInfo"/> for each culture for the content while detecting collisions/errors
         /// </summary>
@@ -188,7 +188,7 @@ namespace Umbraco.Web.Routing
                 while (o != null)
                 {
                     l.Add(o.Name);
-                    o = o.Parent;
+                    o = o.Parent();
                 }
                 l.Reverse();
                 var s = "/" + string.Join("/", l) + " (id=" + pcr.PublishedContent.Id + ")";

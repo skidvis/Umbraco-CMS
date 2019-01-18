@@ -16,6 +16,7 @@ using Current = Umbraco.Web.Composing.Current;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.Membership;
 using Umbraco.Core.Services;
+using Umbraco.Web;
 using Umbraco.Tests.PublishedContent;
 
 namespace Umbraco.Tests.Cache.PublishedCache
@@ -107,7 +108,7 @@ namespace Umbraco.Tests.Cache.PublishedCache
             Assert.AreEqual(mRoot.Name, publishedMedia.Name);
             Assert.AreEqual(mRoot.Path, publishedMedia.Path);
             Assert.AreEqual(mRoot.SortOrder, publishedMedia.SortOrder);
-            Assert.IsNull(publishedMedia.Parent);
+            Assert.IsNull(publishedMedia.Parent());
         }
 
         [TestCase("id")]
@@ -168,9 +169,9 @@ namespace Umbraco.Tests.Cache.PublishedCache
                     child1, child2
                 });
 
-            Assert.AreEqual(2, dicDoc.Children.Count());
-            Assert.AreEqual(222333, dicDoc.Children.ElementAt(0).Id);
-            Assert.AreEqual(444555, dicDoc.Children.ElementAt(1).Id);
+            Assert.AreEqual(2, dicDoc.Children().Count());
+            Assert.AreEqual(222333, dicDoc.Children().ElementAt(0).Id);
+            Assert.AreEqual(444555, dicDoc.Children().ElementAt(1).Id);
         }
 
         [Test]
@@ -208,7 +209,7 @@ namespace Umbraco.Tests.Cache.PublishedCache
             var doc = store.CreateFromCacheValues(store.ConvertFromSearchResult(result));
 
             DoAssert(doc, 1234, key, templateIdVal: null, 0, "/media/test.jpg", "Image", 23, "Shannon", "Shannon", 0, 0, "-1,1234", DateTime.Parse("2012-07-17T10:34:09"), DateTime.Parse("2012-07-16T10:34:09"), 2);
-            Assert.AreEqual(null, doc.Parent);
+            Assert.AreEqual(null, doc.Parent());
         }
 
         [Test]
@@ -224,10 +225,10 @@ namespace Umbraco.Tests.Cache.PublishedCache
             var doc = cache.CreateFromCacheValues(cache.ConvertFromXPathNavigator(navigator, true));
 
             DoAssert(doc, 2000, key, templateIdVal: null, 2, "image1", "Image", 23, "Shannon", "Shannon", 33, 33, "-1,2000", DateTime.Parse("2012-06-12T14:13:17"), DateTime.Parse("2012-07-20T18:50:43"), 1);
-            Assert.AreEqual(null, doc.Parent);
-            Assert.AreEqual(2, doc.Children.Count());
-            Assert.AreEqual(2001, doc.Children.ElementAt(0).Id);
-            Assert.AreEqual(2002, doc.Children.ElementAt(1).Id);
+            Assert.AreEqual(null, doc.Parent());
+            Assert.AreEqual(2, doc.Children().Count());
+            Assert.AreEqual(2001, doc.Children().ElementAt(0).Id);
+            Assert.AreEqual(2002, doc.Children().ElementAt(1).Id);
         }
 
         private XmlDocument GetMediaXml()

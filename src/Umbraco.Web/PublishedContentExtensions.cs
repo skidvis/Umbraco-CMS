@@ -635,7 +635,7 @@ namespace Umbraco.Web
         /// <remarks>This method is here for consistency purposes but does not make much sense.</remarks>
         public static IPublishedContent Ancestor(this IPublishedContent content)
         {
-            return content.Parent;
+            return content.Parent();
         }
 
         /// <summary>
@@ -767,7 +767,7 @@ namespace Umbraco.Web
         {
             if (content == null) throw new ArgumentNullException(nameof(content));
             if (orSelf) yield return content;
-            while ((content = content.Parent) != null)
+            while ((content = content.Parent()) != null)
                 yield return content;
         }
 
@@ -965,7 +965,7 @@ namespace Umbraco.Web
 
         public static IPublishedContent Up(this IPublishedContent content)
         {
-            return content.Parent;
+            return content.Parent();
         }
 
         public static IPublishedContent Up(this IPublishedContent content, int number)
@@ -978,7 +978,7 @@ namespace Umbraco.Web
         public static IPublishedContent Up(this IPublishedContent content, string contentTypeAlias)
         {
             return string.IsNullOrEmpty(contentTypeAlias)
-                ? content.Parent
+                ? content.Parent()
                 : content.Ancestor(contentTypeAlias);
         }
 
@@ -988,7 +988,7 @@ namespace Umbraco.Web
 
         public static IPublishedContent Down(this IPublishedContent content)
         {
-            return content.Children.FirstOrDefault();
+            return content.Children().FirstOrDefault();
         }
 
         public static IPublishedContent Down(this IPublishedContent content, int number)
@@ -997,9 +997,9 @@ namespace Umbraco.Web
                 throw new ArgumentOutOfRangeException(nameof(number), "Must be greater than, or equal to, zero.");
             if (number == 0) return content;
 
-            content = content.Children.FirstOrDefault();
+            content = content.Children().FirstOrDefault();
             while (content != null && --number > 0)
-                content = content.Children.FirstOrDefault();
+                content = content.FirstChild();
 
             return content;
         }
@@ -1007,7 +1007,7 @@ namespace Umbraco.Web
         public static IPublishedContent Down(this IPublishedContent content, string contentTypeAlias)
         {
             if (string.IsNullOrEmpty(contentTypeAlias))
-                return content.Children.FirstOrDefault();
+                return content.FirstChild();
 
             // note: this is what legacy did, but with a broken Descendant
             // so fixing Descendant will change how it works...
@@ -1030,7 +1030,13 @@ namespace Umbraco.Web
             where T : class, IPublishedContent
         {
             if (content == null) throw new ArgumentNullException(nameof(content));
-            return content.Parent as T;
+            return content.Parent() as T;
+        }
+
+        public static IPublishedContent Parent(this IPublishedContent content)
+        {
+            if (content == null) throw new ArgumentNullException(nameof(content));
+            return content.Parent;
         }
 
         #endregion
@@ -1051,15 +1057,11 @@ namespace Umbraco.Web
         {
             if (content == null) throw new ArgumentNullException(nameof(content));
 
-            //
             return content.Children.Where(x =>
             {
                 if (!x.ContentType.VariesByCulture()) return true; // invariant = always ok
                 return x.HasCulture(culture);
-                return false;
             });
-
-            return content.Children.WhereIsInvariantOrHasCulture(culture);
         }
 
         /// <summary>
@@ -1181,7 +1183,7 @@ namespace Umbraco.Web
                     //create all row data
                     var tableData = Core.DataTableExtensions.CreateTableData();
                     //loop through each child and create row data for it
-                    foreach (var n in content.Children.OrderBy(x => x.SortOrder))
+                    foreach (var n in content.Children(culture).OrderBy(x => x.SortOrder))
                     {
                         if (contentTypeAliasFilter.IsNullOrWhiteSpace() == false)
                         {

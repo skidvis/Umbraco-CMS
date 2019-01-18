@@ -198,7 +198,7 @@ namespace Umbraco.Tests.PublishedContent
         [Test]
         public void Do_Not_Get_Content_Recursively_Unless_Requested()
         {
-            var content = UmbracoContext.Current.ContentCache.GetAtRoot().First().Children.First();
+            var content = UmbracoContext.Current.ContentCache.GetAtRoot().First().Children().First();
             var value = content.Value("welcomeText2");
             Assert.IsNull(value);
         }
@@ -206,7 +206,7 @@ namespace Umbraco.Tests.PublishedContent
         [Test]
         public void Can_Get_Content_Recursively()
         {
-            var content = UmbracoContext.Current.ContentCache.GetAtRoot().First().Children.First();
+            var content = UmbracoContext.Current.ContentCache.GetAtRoot().First().Children().First();
             var value = content.Value("welcomeText2", fallback: Fallback.ToAncestors);
             Assert.AreEqual("Welcome", value);
         }
@@ -214,7 +214,7 @@ namespace Umbraco.Tests.PublishedContent
         [Test]
         public void Can_Get_Content_With_Recursive_Priority()
         {
-            var content = UmbracoContext.Current.ContentCache.GetAtRoot().First().Children.First();
+            var content = UmbracoContext.Current.ContentCache.GetAtRoot().First().Children().First();
             var value = content.Value("welcomeText", "nl", fallback: Fallback.To(Fallback.Ancestors, Fallback.Language));
 
             // No Dutch value is directly assigned. Check has fallen back to Dutch value from parent.
@@ -224,7 +224,7 @@ namespace Umbraco.Tests.PublishedContent
         [Test]
         public void Can_Get_Content_With_Fallback_Language_Priority()
         {
-            var content = UmbracoContext.Current.ContentCache.GetAtRoot().First().Children.First();
+            var content = UmbracoContext.Current.ContentCache.GetAtRoot().First().Children().First();
             var value = content.Value("welcomeText", "nl", fallback: Fallback.ToLanguage);
 
             // No Dutch value is directly assigned.  Check has fallen back to English value from language variant.
@@ -234,14 +234,14 @@ namespace Umbraco.Tests.PublishedContent
         [Test]
         public void Throws_For_Non_Supported_Fallback()
         {
-            var content = UmbracoContext.Current.ContentCache.GetAtRoot().First().Children.First();
+            var content = UmbracoContext.Current.ContentCache.GetAtRoot().First().Children().First();
             Assert.Throws<NotSupportedException>(() => content.Value("welcomeText", "nl", fallback: Fallback.To(999)));
         }
 
         [Test]
         public void Can_Fallback_To_Default_Value()
         {
-            var content = UmbracoContext.Current.ContentCache.GetAtRoot().First().Children.First();
+            var content = UmbracoContext.Current.ContentCache.GetAtRoot().First().Children().First();
 
             // no Dutch value is assigned, so getting null
             var value = content.Value("welcomeText", "nl");
@@ -259,7 +259,7 @@ namespace Umbraco.Tests.PublishedContent
         [Test]
         public void Can_Have_Custom_Default_Value()
         {
-            var content = UmbracoContext.Current.ContentCache.GetAtRoot().First().Children.First();
+            var content = UmbracoContext.Current.ContentCache.GetAtRoot().First().Children().First();
 
             // hack the value, pretend the converter would return something
             var prop = content.GetProperty("welcomeText") as SolidPublishedPropertyWithLanguageVariants;

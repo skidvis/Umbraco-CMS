@@ -96,7 +96,7 @@ namespace Umbraco.Tests.PublishedContent
 
         public override IEnumerable<IPublishedContent> GetAtRoot(bool preview)
         {
-            return _content.Values.Where(x => x.Parent == null);
+            return _content.Values.Where(x => x.Parent() == null);
         }
 
         public override IPublishedContent GetSingleByXPath(bool preview, string xpath, Core.Xml.XPathVariable[] vars)
@@ -228,7 +228,7 @@ namespace Umbraco.Tests.PublishedContent
             IPublishedContent content = this;
             while (content != null && (property == null || property.HasValue() == false))
             {
-                content = content.Parent;
+                content = content.Parent();
                 property = content == null ? null : content.GetProperty(alias);
             }
 

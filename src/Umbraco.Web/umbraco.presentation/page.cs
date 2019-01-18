@@ -11,6 +11,7 @@ using Umbraco.Web.Editors;
 using Umbraco.Web.Routing;
 using Umbraco.Core.PropertyEditors;
 using Umbraco.Web.Composing;
+using Umbraco.Web;
 
 namespace umbraco
 {
@@ -62,7 +63,7 @@ namespace umbraco
             populatePageData(frequest.PublishedContent.Id,
                 frequest.PublishedContent.Name, frequest.PublishedContent.ContentType.Id, frequest.PublishedContent.ContentType.Alias,
                 frequest.PublishedContent.WriterName, frequest.PublishedContent.CreatorName, frequest.PublishedContent.CreateDate, frequest.PublishedContent.UpdateDate,
-                frequest.PublishedContent.Path, frequest.PublishedContent.Parent == null ? -1 : frequest.PublishedContent.Parent.Id);
+                frequest.PublishedContent.Path, frequest.PublishedContent.Parent() == null ? -1 : frequest.PublishedContent.Parent().Id);
 
             if (frequest.HasTemplate)
             {
@@ -86,7 +87,7 @@ namespace umbraco
             populatePageData(doc.Id,
                 doc.Name, doc.ContentType.Id, doc.ContentType.Alias,
                 doc.WriterName, doc.CreatorName, doc.CreateDate, doc.UpdateDate,
-                doc.Path, doc.Parent == null ? -1 : doc.Parent.Id);
+                doc.Path, doc.Parent() == null ? -1 : doc.Parent().Id);
 
             if (doc.TemplateId.HasValue)
             {
@@ -141,7 +142,7 @@ namespace umbraco
             _elements.Add("path", path);
             _elements.Add("splitpath", _splitpath);
         }
-        
+
         /// <summary>
         /// Puts the properties of the node into the elements table
         /// </summary>

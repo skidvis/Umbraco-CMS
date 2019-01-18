@@ -270,14 +270,14 @@ namespace Umbraco.Web.PublishedCache.XmlPublishedCache
                 pathParts.Add(urlName);
 
                 // move to parent node
-                n = n.Parent;
+                n = n.Parent();
                 hasDomains = n != null && _domainHelper.NodeHasDomains(n.Id);
             }
 
             // no domain, respect HideTopLevelNodeFromPath for legacy purposes
             if (hasDomains == false && _globalSettings.HideTopLevelNodeFromPath)
             {
-                if (node.Parent == null)
+                if (node.Parent()== null)
                 {
                     var rootNode = GetByRoute(preview, "/", true);
                     if (rootNode == null)

@@ -109,7 +109,7 @@ namespace Umbraco.Web.PublishedCache.NuCache
                 // hideTopLevelNode = support legacy stuff, look for /*/path/to/node
                 // else normal, look for /path/to/node
                 content = hideTopLevelNode.Value
-                    ? GetAtRoot(preview).SelectMany(x => x.Children).FirstOrDefault(x => x.GetUrlSegment(culture) == parts[0])
+                    ? GetAtRoot(preview).SelectMany(x => x.Children()).FirstOrDefault(x => x.GetUrlSegment(culture) == parts[0])
                     : GetAtRoot(preview).FirstOrDefault(x => x.GetUrlSegment(culture) == parts[0]);
                 content = FollowRoute(content, parts, 1, culture);
             }
@@ -159,7 +159,7 @@ namespace Umbraco.Web.PublishedCache.NuCache
                 pathParts.Add(urlSegment);
 
                 // move to parent node
-                n = n.Parent;
+                n = n.Parent();
                 if (n != null)
                     urlSegment = n.GetUrlSegment(culture);
 
@@ -189,7 +189,7 @@ namespace Umbraco.Web.PublishedCache.NuCache
             while (content != null && i < parts.Count)
             {
                 var part = parts[i++];
-                content = content.Children.FirstOrDefault(x =>
+                content = content.Children().FirstOrDefault(x =>
                 {
                     var urlSegment = x.GetUrlSegment(culture);
                     return urlSegment == part;
@@ -208,7 +208,7 @@ namespace Umbraco.Web.PublishedCache.NuCache
             // "/foo" fails (looking for "/*/foo") we try also "/foo".
             // this does not make much sense anyway esp. if both "/foo/" and "/bar/foo" exist, but
             // that's the way it works pre-4.10 and we try to be backward compat for the time being
-            if (content.Parent == null)
+            if (content.Parent() == null)
             {
                 var rootNode = GetByRoute(preview, "/", true);
                 if (rootNode == null)

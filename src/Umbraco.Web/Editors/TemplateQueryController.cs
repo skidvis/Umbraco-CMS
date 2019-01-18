@@ -59,7 +59,7 @@ namespace Umbraco.Web.Editors
 
         public QueryResultModel PostTemplateQuery(QueryModel model)
         {
-            
+
             var queryResult = new QueryResultModel();
 
             var sb = new StringBuilder();
@@ -115,7 +115,7 @@ namespace Umbraco.Web.Editors
             {
                 timer.Start();
 
-                contents = pointerNode.Children.OfTypes(new[] { model.ContentType.Alias });
+                contents = pointerNode.Children().OfTypes(new[] { model.ContentType.Alias });
 
                 timer.Stop();
                 // TODO change to .Children({0})
@@ -124,7 +124,7 @@ namespace Umbraco.Web.Editors
             else
             {
                 timer.Start();
-                contents = pointerNode.Children;
+                contents = pointerNode.Children();
                 timer.Stop();
                 sb.Append(".Children()");
             }
@@ -284,7 +284,7 @@ namespace Umbraco.Web.Editors
                 aliases.Add(targetNode.ContentType.Alias);
             }
 
-            aliases.AddRange(this.GetChildContentTypeAliases(targetNode.Parent, current));
+            aliases.AddRange(this.GetChildContentTypeAliases(targetNode.Parent(), current));
 
             return aliases;
         }

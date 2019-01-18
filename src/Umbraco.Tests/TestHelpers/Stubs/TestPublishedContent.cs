@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web.PublishedCache;
+using Umbraco.Web;
 
 namespace Umbraco.Tests.TestHelpers.Stubs
 {
@@ -61,7 +62,7 @@ namespace Umbraco.Tests.TestHelpers.Stubs
             var firstNonNullProperty = property;
             while (content != null && (property == null || property.HasValue() == false))
             {
-                content = content.Parent;
+                content = content.Parent();
                 property = content?.GetProperty(alias);
                 if (firstNonNullProperty == null && property != null) firstNonNullProperty = property;
             }

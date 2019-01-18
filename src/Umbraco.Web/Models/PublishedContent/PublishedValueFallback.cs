@@ -155,7 +155,7 @@ namespace Umbraco.Web.Models.PublishedContent
             IPublishedProperty noValueProperty = null;
             do
             {
-                content = content.Parent;
+                content = content.Parent();
                 property = content?.GetProperty(alias);
                 if (property != null)
                 {
